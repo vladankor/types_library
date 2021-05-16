@@ -8,17 +8,18 @@
 #include <platform/type_list/list.hpp>
 //-----------------------------------------------------------------------------
 
+
 namespace platform::tests {
 
 namespace data {
 
-using empty_list = t_type_list<>;
-using integers_1 = t_type_list<int>;
-using integers_2 = t_type_list<int, int>;
-using floats_1 = t_type_list<float>;
-using floats_2 = t_type_list<float, float>;
-using not_unique = t_type_list<int, int, int, float, int, float, float, bool, bool>;
-using unique = t_type_list<int, float, bool>;
+using empty_list = list_type<>;
+using integers_1 = list_type<int>;
+using integers_2 = list_type<int, int>;
+using floats_1 = list_type<float>;
+using floats_2 = list_type<float, float>;
+using not_unique = list_type<int, int, int, float, int, float, float, bool, bool>;
+using unique = list_type<int, float, bool>;
 
 }  // namespace data
 
@@ -54,8 +55,9 @@ static_assert(!is_contains_v<internal::void_type, data::integers_1>
 // push_front_t tests
 // ----------------------------------------------------------------------------
 
-using empty_with_float = platform::push_front_t<float, data::empty_list>;
-static_assert(std::is_same_v<empty_with_float, data::floats_1>, "push_front_t failed");
+using empty_with_float = platform::push_t<float, data::empty_list>;
+static_assert(std::is_same_v<empty_with_float, data::floats_1>
+  , "push_front_t failed");
 
 // ----------------------------------------------------------------------------
 // pop_front_t tests
@@ -67,7 +69,7 @@ static_assert(std::is_same_v<empty_with_float, data::floats_1>, "push_front_t fa
 
 using integer_type = platform::at_front_t<data::integers_1>;
 static_assert(std::is_same_v<integer_type, int>, "t_at_back failed");
-using integers_with_float = platform::push_front_t<float, data::integers_1>;
+using integers_with_float = platform::push_t<float, data::integers_1>;
 using float_type = platform::at_front_t<integers_with_float>;
 static_assert(std::is_same_v<float_type, float>, "t_at_back failed");
 
