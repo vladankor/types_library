@@ -4,3 +4,9 @@ CMakeCache.txt
 Makefile
 kore_lib
 settings.json
+build
+_deps
+.vscode
+.cache
+bin
+lib

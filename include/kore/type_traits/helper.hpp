@@ -4,25 +4,23 @@
 
 #pragma once
 
-//- std -------------------------------------------------------------------------------------------
-#include <type_traits>
+//- kore ------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 
 namespace kore::type_traits {
 
 //-------------------------------------------------------------------------------------------------
-// struct undefined_type
+// struct general
 //-------------------------------------------------------------------------------------------------
 
-struct undefined_type {}; // undefined_type
-
-template<class TType>
-using is_undefined_type_t = std::is_same<std::decay_t<TType>, undefined_type>;
-
-template<class TType>
-inline constexpr bool is_undefined_type_v = is_undefined_type_t<TType>::value;
-
-template<class TType>
-inline constexpr bool is_not_undefined_type_v = !is_undefined_type_t<TType>::value;
+template<class T>
+struct general {
+  using value_type = T;
+  using reference = value_type&;
+  using rreference = value_type&&;
+  using const_reference = const value_type&;
+  using pointer = value_type*;
+  using const_pointer = const value_type*;
+}; // struct general
 
 } // namespace kore::type_traits
