@@ -24,7 +24,7 @@ namespace kore {
 
 template<class T, class TComparator = std::less<T>, class TAllocator = std::allocator<T>>
 class priority_queue {
-public:
+ public:
   using value_type = T;
   using allocator_type = TAllocator;
   using size_type = std::size_t;
@@ -57,7 +57,7 @@ public:
 
   const bool empty() const noexcept;
 
-private:
+ private:
 };
 
-} // namespace kore::containers
+} // namespace kore

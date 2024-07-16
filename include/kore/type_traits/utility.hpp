@@ -21,33 +21,33 @@ namespace kore::type_traits {
 // struct merge_type
 //-------------------------------------------------------------------------------------------------
 
-template <class... TArgsFirst> struct merge_type;
+template<class... TArgsFirst>
+struct merge_type;
 
-template <class... TArgsFirst> struct merge_type<list_type<TArgsFirst...>> {
-  template <class... TArgsSecond> struct with_type;
+template<class... TArgsFirst>
+struct merge_type<list_type<TArgsFirst...>> {
+  template<class... TArgsSecond>
+  struct with_type;
 
-  template <class... TArgsSecond> struct with_type<list_type<TArgsSecond...>> {
+  template<class... TArgsSecond>
+  struct with_type<list_type<TArgsSecond...>> {
     using type = list_type<TArgsFirst..., TArgsSecond...>;
   }; // t_with
 };   // merge_type
 
 template<class T>
-concept Container = requires (T a) {
-  typename T::value_type;
-} && std::ranges::range<T>;
+concept Container = requires(T a) { typename T::value_type; } && std::ranges::range<T>;
 
 template<class T>
-concept MappedContainer = requires (T a) {
-    typename T::key_type;
-} && Container<T>;
+concept MappedContainer = requires(T a) { typename T::key_type; } && Container<T>;
 
 template<class T>
-concept Stringify = requires (T a) {
-    { a.to_string() } -> std::same_as<std::string>;
+concept Stringify = requires(T a) {
+  { a.to_string() } -> std::same_as<std::string>;
 };
 
 template<class T>
-concept STDStringify = requires (T a) {
+concept STDStringify = requires(T a) {
   { std::to_string(a) } -> std::same_as<std::string>;
 };
 

@@ -8,8 +8,8 @@
 #include <type_traits>
 // ------------------------------------------------------------------------------------------------
 
-namespace platform {
+namespace kore {
 
 namespace details {} // namespace details
 
-} // namespace platform
+} // namespace kore

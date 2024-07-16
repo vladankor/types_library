@@ -5,29 +5,30 @@
 #pragma once
 
 //- std -------------------------------------------------------------------------------------------
-#include <exception>
-#include <string>
+#include <functional>
+#include <list>
+#include <type_traits>
+#include <unordered_map>
 // ------------------------------------------------------------------------------------------------
 
 //- kore ------------------------------------------------------------------------------------------
+#include <kore/graph/edge.hpp>
+#include <kore/graph/vertex.hpp>
 // ------------------------------------------------------------------------------------------------
 
 namespace kore {
 
-class k_empty_exception : public std::exception {
+class k_graph {
  public:
-  k_empty_exception() noexcept {}
-
-  k_empty_exception(const k_empty_exception&) noexcept = default;
-  k_empty_exception(k_empty_exception&&) noexcept = default;
-
-  k_empty_exception(const std::string& message) : m_what_{message} {}
-  k_empty_exception(std::string&& message) : m_what_{std::move(message)} {}
-
-  const char* what() const noexcept override { return m_what_.data(); }
+  k_graph() {}
 
  private:
-  std::string m_what_;
-};
+  using vertex_id_type = k_vertex::id_traits::value_type;
+  using edge_id_type = k_edge::id_traits::value_type;
+
+  std::unordered_map<vertex_id_type, k_vertex> m_vertices__;
+  std::unordered_map<edge_id_type, k_edge> m_edges__;
+  std::unordered_map<vertex_id_type, std::vector<edge_id_type>> m_adjacency_list__;
+}; // class k_graph
 
 } // namespace kore

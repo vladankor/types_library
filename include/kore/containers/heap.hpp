@@ -25,7 +25,7 @@ namespace kore {
 template<class T, class TComparator = std::greater<T>, std::size_t VBranchingFactor = 3,
          class TAllocator = std::allocator<T>>
 class k_heap {
-public:
+ public:
   static_assert(VBranchingFactor > 1, "Expected branching factor at least 2 to make heap");
 
   using storage_type = std::vector<T, TAllocator>;
@@ -89,7 +89,7 @@ public:
 
   const bool empty() const noexcept { return m_storage__.empty(); }
 
-private:
+ private:
   inline size_type get_parent_index__(const size_type index) const noexcept {
     if (index <= 0) {
 #ifdef KORE_DEBUG_MODE

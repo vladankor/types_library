@@ -6,19 +6,18 @@
 
 //- std -------------------------------------------------------------------------------------------
 #include <algorithm>
+#include <concepts>
+#include <functional>
+#include <iostream>
 #include <sstream>
 #include <string>
-#include <iostream>
-// ------------------------------------------------------------------------------------------------
-
-//- kore ------------------------------------------------------------------------------------------
-#include <functional>
-#include <kore/managed_ptr.hpp>
-#include <kore/type_traits/utility.hpp>
 #include <type_traits>
 // ------------------------------------------------------------------------------------------------
 
-#include <concepts>
+//- kore ------------------------------------------------------------------------------------------
+#include <kore/managed_ptr.hpp>
+#include <kore/type_traits/utility.hpp>
+// ------------------------------------------------------------------------------------------------
 
 namespace kore::utils {
 
