@@ -8,47 +8,37 @@
 #include <memory>
 // ------------------------------------------------------------------------------------------------
 
-//- boost -----------------------------------------------------------------------------------------
-#include <boost/uuid/uuid.hpp>
-// ------------------------------------------------------------------------------------------------
-
 //- kore ------------------------------------------------------------------------------------------
+#include <kore/graph/traits.hpp>
 #include <kore/managed_ptr.hpp>
-#include <kore/type_traits/helper.hpp>
 // ------------------------------------------------------------------------------------------------
 
-namespace kore {
+namespace kore::graph {
 
-class k_vertex;
-
+template<class VertexDataType, class EdgeDataType>
 class k_edge {
  public:
-  struct data {
-    data(const double weight, kore::k_managed_ptr<k_vertex> source,
-         kore::k_managed_ptr<k_vertex> destination)
-        : m_weight{weight}, m_source{std::move(source)}, m_destination{std::move(destination)} {}
-
-    double m_weight = 0.0;
-    k_managed_ptr<k_vertex> m_source = nullptr;
-    k_managed_ptr<k_vertex> m_destination = nullptr;
-  }; // struct data
+  using tt = graph_tt<VertexDataType, EdgeDataType>;
 
  public:
-  using data_traits = ::kore::type_traits::general<data>;
-  using id_traits = ::kore::type_traits::general<boost::uuids::uuid>;
+  k_edge(tt::id_tt::rref id, kore::k_managed_ptr<typename tt::v_tt::type> source,
+         kore::k_managed_ptr<typename tt::v_tt::type> destination, tt::e_tt::rref data) noexcept
+      : m_id__{std::move(id)}, m_source__{std::move(source)},
+        m_destination__{std::move(destination)}, m_data__{std::move(data)} {}
 
- public:
-  k_edge() noexcept {}
+  tt::e_d_tt::cref data() const noexcept { return m_data__; }
+  tt::e_d_tt::ref data() noexcept { return m_data__; }
 
-  data_traits::const_reference data() const { return m_data__; }
-  data_traits::reference data() { return m_data__; }
+  tt::id_tt::cref id() const noexcept { return m_id__; }
 
-  id_traits::const_reference id() const { return m_id__; }
-  id_traits::reference id() { return m_id__; }
+  const k_managed_ptr<typename tt::v_type>& source() const noexcept { return m_source__; }
+  const k_managed_ptr<typename tt::v_type>& destination() const noexcept { return m_destination__; }
 
  private:
-  id_traits::value_type m_id__;
-  data_traits::value_type m_data__;
+  tt::id_type m_id__;
+  k_managed_ptr<typename tt::v_type> m_source__ = nullptr;
+  k_managed_ptr<typename tt::v_type> m_destination__ = nullptr;
+  tt::e_d_tt::type m_data__;
 }; // class k_edge
 
-} // namespace kore
+} // namespace kore::graph

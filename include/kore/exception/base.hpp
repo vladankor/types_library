@@ -10,17 +10,28 @@
 // ------------------------------------------------------------------------------------------------
 
 //- kore ------------------------------------------------------------------------------------------
-#include <kore/exception/base.hpp>
 // ------------------------------------------------------------------------------------------------
 
 namespace kore {
 
-struct k_empty_exception_tag {};
+template<typename TTag>
+class k_exception : public std::exception {
+ public:
+  using tag_type = TTag;
 
-using k_empty_exception = k_exception<k_empty_exception_tag>;
+ public:
+  k_exception() noexcept {}
 
-struct k_not_found_exception_tag {};
+  k_exception(const k_exception&) noexcept = default;
+  k_exception(k_exception&&) noexcept = default;
 
-using k_not_found_exception = k_exception<k_not_found_exception_tag>;
+  k_exception(const std::string& message) : m_what__{message} {}
+  k_exception(std::string&& message) : m_what__{std::move(message)} {}
+
+  const char* what() const noexcept override { return m_what__.data(); }
+
+ private:
+  std::string m_what__;
+};
 
 } // namespace kore

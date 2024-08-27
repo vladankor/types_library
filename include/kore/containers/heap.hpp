@@ -22,17 +22,19 @@
 
 namespace kore {
 
-template<class T, class TComparator = std::greater<T>, std::size_t VBranchingFactor = 3,
-         class TAllocator = std::allocator<T>>
+template<class TValue, class TComparator = std::greater<TValue>, std::size_t VBranchingFactor = 3,
+         class TAllocator = std::allocator<TValue>>
 class k_heap {
  public:
-  static_assert(VBranchingFactor > 1, "Expected branching factor at least 2 to make heap");
+  static_assert(VBranchingFactor > 1, "Expected branching factor at least 2 to make a heap");
 
-  using storage_type = std::vector<T, TAllocator>;
+  using storage_type = std::vector<TValue, TAllocator>;
   using value_type = typename storage_type::value_type;
   using const_reference = typename storage_type::const_reference;
-  using size_type = std::size_t;
+  using size_type = typename storage_type::size_type;
   using comparator_type = TComparator;
+
+  static constexpr std::size_t s_branching_factor = VBranchingFactor;
 
 #ifdef KORE_DEBUG_MODE
   const storage_type& storage() const noexcept { return m_storage__; }
@@ -63,7 +65,7 @@ class k_heap {
   }
 
   template<class... TArgs>
-    requires std::constructible_from<T, TArgs...>
+    requires std::constructible_from<value_type, TArgs...>
   decltype(auto) emplace(TArgs&&... args) {
     auto result = m_storage__.emplace_back(std::forward<TArgs>(args)...);
     push_up__(m_storage__.size() - 1);
@@ -71,18 +73,17 @@ class k_heap {
   }
 
   bool contains(const_reference value) const noexcept
-    requires std::equality_comparable<T>
+    requires std::equality_comparable<value_type>
   {
     return utils::contains(m_storage__, value);
   }
 
   size_type remove(const_reference value)
-    requires std::equality_comparable<T>
+    requires std::equality_comparable<value_type>
   {
-    auto it = std::remove(std::begin(m_storage__), std::end(m_storage__), value);
-    const auto removed = std::distance(it, std::end(m_storage__));
-    m_storage__.erase(it, std::end(m_storage__));
-    return removed;
+    auto result = std::ranges::remove(m_storage__, value);
+    m_storage__.erase(result.begin(), result.end());
+    return result.size();
   }
 
   const size_type size() const noexcept { return m_storage__.size(); }

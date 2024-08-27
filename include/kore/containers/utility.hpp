@@ -22,21 +22,15 @@
 namespace kore::utils {
 
 template<std::ranges::range TContainer>
-inline constexpr bool contains(TContainer& container, typename TContainer::value_type& value) {
+inline constexpr bool contains(TContainer& container,
+                               const typename TContainer::value_type& value) {
   const auto begin = std::begin(container);
   const auto end = std::end(container);
-  return std::find(begin, end, value) != end;
-}
-
-template<class TContainer>
-inline constexpr auto find(TContainer& container, typename TContainer::value_type& value) {
-  const auto begin = std::begin(container);
-  const auto end = std::end(container);
-  return std::find(begin, end, value);
+  return !std::ranges::find(container, value).empty();
 }
 
 template<::kore::type_traits::MappedContainer TMap>
-inline constexpr auto find_or_null(const TMap& map, const typename TMap::key_type& key)
+inline constexpr auto find_or_null(TMap& map, const typename TMap::key_type& key)
     -> decltype(make_k_managed_ptr(&map.find(key)->second)) {
   if (auto it = map.find(key); it != map.end()) {
     return make_k_managed_ptr(&it->second);
@@ -44,23 +38,23 @@ inline constexpr auto find_or_null(const TMap& map, const typename TMap::key_typ
   return {nullptr};
 }
 
-template<kore::type_traits::STDStringify T>
-inline std::string to_string(const T& a) {
+template<kore::type_traits::STDStringifiable T>
+inline std::string k_to_string(const T& a) {
   return std::to_string(a);
 }
 
 template<class T, class U>
-inline ::std::string to_string(const ::std::pair<T, U>& pair) {
+inline ::std::string k_to_string(const ::std::pair<T, U>& pair) {
   ::std::stringstream result;
   result << "(" << ::std::to_string(pair.first) << "," << ::std::to_string(pair.second) << ")";
   return result.str();
 }
 
-template<kore::type_traits::Iterable T>
-inline ::std::string to_string(const T& iterable) {
+template<std::ranges::range T>
+inline ::std::string k_to_string(const T& iterable) {
   ::std::stringstream result;
-  auto current = ::std::begin(iterable);
-  const auto end = ::std::end(iterable);
+  auto current = ::std::cbegin(iterable);
+  const auto end = ::std::cend(iterable);
   result << "[";
   for (; current != end; ++current) {
     result << to_string(*current);

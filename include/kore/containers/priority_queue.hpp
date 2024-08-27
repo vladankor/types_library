@@ -23,13 +23,13 @@
 namespace kore {
 
 template<class T, class TComparator = std::less<T>, class TAllocator = std::allocator<T>>
-class priority_queue {
+class k_priority_queue {
  public:
   using value_type = T;
   using allocator_type = TAllocator;
   using size_type = std::size_t;
 
-  priority_queue() noexcept;
+  k_priority_queue() noexcept;
 
   T&& top();
 

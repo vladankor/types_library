@@ -36,22 +36,25 @@ struct merge_type<list_type<TArgsFirst...>> {
 };   // merge_type
 
 template<class T>
-concept Container = requires(T a) { typename T::value_type; } && std::ranges::range<T>;
+concept Container = requires { typename T::value_type; } && std::ranges::range<T>;
 
 template<class T>
-concept MappedContainer = requires(T a) { typename T::key_type; } && Container<T>;
+concept MappedContainer = requires(T container, typename T::key_type key) {
+  typename T::key_type;
+  container.find(key);
+} && Container<T>;
 
 template<class T>
-concept Stringify = requires(T a) {
+concept SelfStringifiable = requires(T a) {
   { a.to_string() } -> std::same_as<std::string>;
 };
 
 template<class T>
-concept STDStringify = requires(T a) {
+concept STDStringifiable = requires(T a) {
   { std::to_string(a) } -> std::same_as<std::string>;
 };
 
 template<class T>
-concept Iterable = std::ranges::range<T>;
+concept Stringifiable = STDStringifiable<T> || SelfStringifiable<T>;
 
 } // namespace kore::type_traits

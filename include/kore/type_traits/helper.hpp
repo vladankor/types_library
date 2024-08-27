@@ -15,12 +15,13 @@ namespace kore::type_traits {
 
 template<class T>
 struct general {
-  using value_type = T;
-  using reference = value_type&;
-  using rreference = value_type&&;
-  using const_reference = const value_type&;
-  using pointer = value_type*;
-  using const_pointer = const value_type*;
+  using type = T;
+  using ref = type&;
+  using rref = type&&;
+  using cref = const type&;
+  using ptr = type*;
+  using cptr = const type*;
+  using cptrc = const type* const;
 }; // struct general
 
 } // namespace kore::type_traits

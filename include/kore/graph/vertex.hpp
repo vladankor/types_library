@@ -4,36 +4,30 @@
 
 #pragma once
 
-//- std -------------------------------------------------------------------------------------------
-#include <kore/type_traits/helper.hpp>
+//- kore ------------------------------------------------------------------------------------------
+#include <kore/graph/traits.hpp>
+#include <kore/managed_ptr.hpp>
 // ------------------------------------------------------------------------------------------------
 
-//- boost -----------------------------------------------------------------------------------------
-#include <boost/uuid/uuid.hpp>
-// ------------------------------------------------------------------------------------------------
+namespace kore::graph {
 
-namespace kore {
-
+template<class VertexDataType, class EdgeDataType>
 class k_vertex {
  public:
-  struct data {}; // struct data
+  using tt = graph_tt<VertexDataType, EdgeDataType>;
 
  public:
-  using data_traits = ::kore::type_traits::general<data>;
-  using id_traits = ::kore::type_traits::general<boost::uuids::uuid>;
+  k_vertex(tt::id_tt::rref id, tt::id_tt::rref data) noexcept
+      : m_id__{std::move(id)}, m_data__{std::move(data)} {};
 
- public:
-  k_vertex() noexcept = default;
+  tt::v_d_tt::cref data() const { return m_data__; }
+  tt::v_d_tt::ref data() { return m_data__; }
 
-  data_traits::const_reference data() const { return m_data__; }
-  data_traits::reference data() { return m_data__; }
-
-  id_traits::const_reference id() const { return m_id__; }
-  id_traits::reference id() { return m_id__; }
+  tt::id_tt::cref id() const { return m_id__; }
 
  private:
-  id_traits::value_type m_id__;
-  data_traits::value_type m_data__;
+  tt::id_type m_id__;
+  tt::v_d_tt::type m_data__;
 }; // class k_vertex
 
-} // namespace kore
+} // namespace kore::graph

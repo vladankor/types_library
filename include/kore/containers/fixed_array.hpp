@@ -14,9 +14,9 @@ namespace kore {
 
 namespace impl {
 
-struct GenerateTag final {
-  explicit GenerateTag() = default;
-};
+struct k_generate_tag final {
+  explicit k_generate_tag() = default;
+}; // struct k_generate_tag
 
 } // namespace impl
 
@@ -63,8 +63,8 @@ class k_fixed_array final {
   const T* cbegin() const noexcept { return data(); }
   const T* cend() const noexcept { return data() + m_size__; }
 
-  template<class GeneratorFunc>
-  k_fixed_array(impl::GenerateTag tag, const std::size_t size, GeneratorFunc&& generator);
+  template<class TGeneratorFunc>
+  k_fixed_array(impl::GenerateTag /*tag*/, const std::size_t size, TGeneratorFunc&& generator);
 
  private:
   T* m_data__{nullptr};
@@ -94,9 +94,9 @@ k_fixed_array<T, TAllocator>::k_fixed_array(const std::size_t size, Args&&... ar
 }
 
 template<class T, class TAllocator>
-template<class GeneratorFunc>
-k_fixed_array<T, TAllocator>::k_fixed_array(const impl::GenerateTag /*tag*/, const std::size_t size,
-                                            GeneratorFunc&& generator)
+template<class TGeneratorFunc>
+k_fixed_array<T, TAllocator>::k_fixed_array(const impl::k_generate_tag /*tag*/,
+                                            const std::size_t size, TGeneratorFunc&& generator)
     : m_size__(size) {
   if (m_size__ == 0) {
     return;
