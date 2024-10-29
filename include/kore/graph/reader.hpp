@@ -15,22 +15,21 @@
 
 namespace kore::graph {
 
-template<class VertexDataType, class EdgeDataType>
-k_edge<VertexDataType, EdgeDataType> read_edge_from_json(const std::string_view json_edge) {
-  using edge_type = k_edge<VertexDataType, EdgeDataType>;
+template<class TVertexData, class TEdgeData>
+k_edge<TVertexData, TEdgeData> read_edge_from_json(const std::string_view json_edge) {
+  using edge_type = k_edge<TVertexData, TEdgeData>;
   return edge_type{};
 }
 
-template<class VertexDataType, class EdgeDataType>
-k_graph<VertexDataType, EdgeDataType> read_graph_from_json(const std::string_view json_value) {
-  using graph_type = k_graph<VertexDataType, EdgeDataType>;
+template<class TVertexData, class TEdgeData>
+k_graph<TVertexData, TEdgeData> read_graph_from_json(const std::string_view json_value) {
+  using graph_type = k_graph<TVertexData, TEdgeData>;
   return graph_type{};
 }
 
-template<class VertexDataType, class EdgeDataType>
-k_graph<VertexDataType, EdgeDataType>
-read_graph_from_json_file(const std::filesystem::path& json_file) {
-  using graph_type = k_graph<VertexDataType, EdgeDataType>;
+template<class TVertexData, class TEdgeData>
+k_graph<TVertexData, TEdgeData> read_graph_from_json_file(const std::filesystem::path& json_file) {
+  using graph_type = k_graph<TVertexData, TEdgeData>;
   return graph_type{};
 }
 

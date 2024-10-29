@@ -14,12 +14,16 @@
 #include <type_traits>
 // ------------------------------------------------------------------------------------------------
 
+//- boost -----------------------------------------------------------------------------------------
+#include <boost/uuid/uuid_io.hpp>
+// ------------------------------------------------------------------------------------------------
+
 //- kore ------------------------------------------------------------------------------------------
 #include <kore/managed_ptr.hpp>
 #include <kore/type_traits/utility.hpp>
 // ------------------------------------------------------------------------------------------------
 
-namespace kore::utils {
+namespace kore::utility {
 
 template<std::ranges::range TContainer>
 inline constexpr bool contains(TContainer& container,
@@ -27,6 +31,17 @@ inline constexpr bool contains(TContainer& container,
   const auto begin = std::begin(container);
   const auto end = std::end(container);
   return !std::ranges::find(container, value).empty();
+}
+
+template<::kore::type_traits::Container TContainer>
+inline constexpr auto find_or_null(TContainer& container,
+                                   const typename TContainer::value_type& value)
+    -> decltype(make_k_managed_ptr(std::find(std::begin(container), std::end(container), value))) {
+  const auto end_it = std::end(container);
+  if (const auto it = std::find(std::begin(container), end_it, value); it != end_it) {
+    return make_k_managed_ptr(&(*it));
+  }
+  return {nullptr};
 }
 
 template<::kore::type_traits::MappedContainer TMap>
@@ -38,32 +53,4 @@ inline constexpr auto find_or_null(TMap& map, const typename TMap::key_type& key
   return {nullptr};
 }
 
-template<kore::type_traits::STDStringifiable T>
-inline std::string k_to_string(const T& a) {
-  return std::to_string(a);
-}
-
-template<class T, class U>
-inline ::std::string k_to_string(const ::std::pair<T, U>& pair) {
-  ::std::stringstream result;
-  result << "(" << ::std::to_string(pair.first) << "," << ::std::to_string(pair.second) << ")";
-  return result.str();
-}
-
-template<std::ranges::range T>
-inline ::std::string k_to_string(const T& iterable) {
-  ::std::stringstream result;
-  auto current = ::std::cbegin(iterable);
-  const auto end = ::std::cend(iterable);
-  result << "[";
-  for (; current != end; ++current) {
-    result << to_string(*current);
-    if (std::next(current) != end) {
-      result << ",";
-    }
-  }
-  result << "]";
-  return result.str();
-}
-
-} // namespace kore::utils
+} // namespace kore::utility

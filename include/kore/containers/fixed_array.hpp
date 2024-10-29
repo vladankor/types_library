@@ -64,7 +64,7 @@ class k_fixed_array final {
   const T* cend() const noexcept { return data() + m_size__; }
 
   template<class TGeneratorFunc>
-  k_fixed_array(impl::GenerateTag /*tag*/, const std::size_t size, TGeneratorFunc&& generator);
+  k_fixed_array(impl::k_generate_tag /*tag*/, const std::size_t size, TGeneratorFunc&& generator);
 
  private:
   T* m_data__{nullptr};
@@ -141,7 +141,8 @@ k_fixed_array<T, TAllocator>::~k_fixed_array() {
 template<class TGeneratorFunc>
 auto make_k_fixed_array(const std::size_t size, TGeneratorFunc&& generator) {
   using TResult = std::remove_reference_t<std::invoke_result_t<TGeneratorFunc&, std::size_t>>;
-  return k_fixed_array<TResult>(impl::GenerateTag{}, size, std::forward<TGeneratorFunc>(generator));
+  return k_fixed_array<TResult>(impl::k_generate_tag{}, size,
+                                std::forward<TGeneratorFunc>(generator));
 }
 
 } // namespace kore

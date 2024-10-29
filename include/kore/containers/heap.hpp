@@ -7,17 +7,16 @@
 //- std -------------------------------------------------------------------------------------------
 #include <algorithm>
 #include <functional>
-#include <limits>
 #include <memory>
-#include <numeric>
-#include <optional>
-#include <queue>
 #include <type_traits>
 // ------------------------------------------------------------------------------------------------
 
 //- kore ------------------------------------------------------------------------------------------
 #include <kore/containers/utility.hpp>
 #include <kore/managed_ptr.hpp>
+#ifdef KORE_DEBUG_MODE
+#include <kore/utility/string.hpp>
+#endif
 // ------------------------------------------------------------------------------------------------
 
 namespace kore {
@@ -28,10 +27,10 @@ class k_heap {
  public:
   static_assert(VBranchingFactor > 1, "Expected branching factor at least 2 to make a heap");
 
-  using storage_type = std::vector<TValue, TAllocator>;
-  using value_type = typename storage_type::value_type;
-  using const_reference = typename storage_type::const_reference;
-  using size_type = typename storage_type::size_type;
+  using container_type = std::vector<TValue, TAllocator>;
+  using value_type = typename container_type::value_type;
+  using const_reference = typename container_type::const_reference;
+  using size_type = typename container_type::size_type;
   using comparator_type = TComparator;
 
   static constexpr std::size_t s_branching_factor = VBranchingFactor;
@@ -40,14 +39,14 @@ class k_heap {
   const storage_type& storage() const noexcept { return m_storage__; }
 #endif
 
-  k_heap() noexcept(std::is_nothrow_default_constructible_v<storage_type> &&
+  k_heap() noexcept(std::is_nothrow_default_constructible_v<container_type> &&
                     std::is_nothrow_default_constructible_v<comparator_type>) = default;
 
-  value_type top() noexcept(std::is_nothrow_move_constructible_v<value_type>) {
+  value_type pop() noexcept(std::is_nothrow_move_constructible_v<value_type>) {
     return push_down__(0);
   }
 
-  k_managed_ptr<const value_type> peek() const {
+  k_managed_ptr<const value_type> top() const noexcept {
     if (m_storage__.empty()) {
       return nullptr;
     }
@@ -75,7 +74,7 @@ class k_heap {
   bool contains(const_reference value) const noexcept
     requires std::equality_comparable<value_type>
   {
-    return utils::contains(m_storage__, value);
+    return utility::contains(m_storage__, value);
   }
 
   size_type remove(const_reference value)
@@ -119,9 +118,9 @@ class k_heap {
     if (left == right) {
       return m_storage__.size();
     }
-    size_type result = left;
+    auto result = left;
     for (auto i = left; i < right - 1; ++i) {
-      if (m_comparator__(m_storage__[i + 1], m_storage__[i])) {
+      if (std::invoke(m_comparator__, m_storage__[i + 1], m_storage__[i])) {
         result = i + 1;
       }
     }
@@ -141,10 +140,10 @@ class k_heap {
       auto temp = std::move(m_storage__.back());
       m_storage__.pop_back();
       size_type current_index = 0;
-      size_type element_placement_index = get_max_child_index__(current_index);
+      auto element_placement_index = get_max_child_index__(current_index);
       for (; element_placement_index < m_storage__.size();
            element_placement_index = get_max_child_index__(current_index)) {
-        if (!m_comparator__(m_storage__[element_placement_index], temp)) {
+        if (!std::invoke(m_comparator__, m_storage__[element_placement_index], temp)) {
           break;
         }
         m_storage__[current_index] = std::move(m_storage__[element_placement_index]);
@@ -166,7 +165,7 @@ class k_heap {
 #endif
     size_type i_destination = get_parent_index__(index);
     if (m_storage__.size() <= 1 ||
-        !m_comparator__(m_storage__.back(), m_storage__[i_destination])) {
+        !std::invoke(m_comparator__, m_storage__.back(), m_storage__[i_destination])) {
       return;
     }
     // Search for destination index
@@ -176,7 +175,7 @@ class k_heap {
                 << " with result " << m_comparator__(m_storage__.back(), m_storage__[i_destination])
                 << std::endl;
 #endif
-      if (!m_comparator__(m_storage__.back(), m_storage__[i_destination])) {
+      if (!std::invoke(m_comparator__, m_storage__.back(), m_storage__[i_destination])) {
         break;
       }
     }
@@ -184,19 +183,19 @@ class k_heap {
     std::cout << "  Result destination for value: " << i_destination << std::endl;
 #endif
     auto value = std::move(m_storage__.back());
-    size_type i_current = m_storage__.size() - 1;
+    auto i_current = m_storage__.size() - 1;
     while (i_current != i_destination) {
-      const size_type i_next = get_parent_index__(i_current);
+      const auto i_next = get_parent_index__(i_current);
       m_storage__[i_current] = std::move(m_storage__[i_next]);
       i_current = i_next;
     }
     m_storage__[i_destination] = std::move(value);
 #ifdef KORE_DEBUG_MODE
-    std::cout << "Result: " << utils::to_string(m_storage__) << std::endl;
+    std::cout << "Result: " << utility::to_string(m_storage__) << std::endl;
 #endif
   }
 
-  storage_type m_storage__;
+  container_type m_storage__;
   comparator_type m_comparator__;
 };
 

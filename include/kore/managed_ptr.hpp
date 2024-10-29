@@ -24,7 +24,7 @@ class k_managed_ptr final {
   template<std::enable_if_t<VNullAllowed, bool> = true>
   constexpr k_managed_ptr(std::nullptr_t) noexcept : m_ptr__{nullptr} {}
 
-  explicit constexpr k_managed_ptr(T* ptr) noexcept : m_ptr__{ptr} {
+  explicit constexpr k_managed_ptr(T* ptr) noexcept(VNullAllowed) : m_ptr__{ptr} {
     if constexpr (!VNullAllowed) {
       if (!m_ptr__) {
         throw std::invalid_argument(
@@ -46,8 +46,8 @@ class k_managed_ptr final {
 }; // classs k_managed_ptr
 
 template<typename T, bool VNullAllowed = true>
-constexpr k_managed_ptr<T> make_k_managed_ptr(T* ptr) noexcept {
-  return k_managed_ptr<T>{ptr};
+constexpr k_managed_ptr<T, VNullAllowed> make_k_managed_ptr(T* ptr) noexcept {
+  return k_managed_ptr<T, VNullAllowed>{ptr};
 }
 
 } // namespace kore

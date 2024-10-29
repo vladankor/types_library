@@ -11,13 +11,13 @@
 
 namespace kore::graph {
 
-template<class VertexDataType, class EdgeDataType>
+template<class TVertexData, class TEdgeData>
 class k_vertex {
  public:
-  using tt = graph_tt<VertexDataType, EdgeDataType>;
+  using tt = graph_tt<TVertexData, TEdgeData>;
 
  public:
-  k_vertex(tt::id_tt::rref id, tt::id_tt::rref data) noexcept
+  k_vertex(tt::id_tt::type id, tt::v_d_tt::rref data) noexcept
       : m_id__{std::move(id)}, m_data__{std::move(data)} {};
 
   tt::v_d_tt::cref data() const { return m_data__; }

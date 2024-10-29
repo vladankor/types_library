@@ -17,7 +17,7 @@ namespace kore {
  */
 template<class T>
 class k_raw_ptr final {
-public:
+ public:
   constexpr k_raw_ptr(std::nullptr_t) noexcept : m_ptr__(nullptr){};
   explicit constexpr k_raw_ptr(T* ptr) noexcept : m_ptr__{ptr} {}
 
@@ -29,7 +29,7 @@ public:
   T& operator*() const { return *m_ptr__; }
   T& operator*() { return *m_ptr__; }
 
-private:
+ private:
   T* m_ptr__;
 };
 

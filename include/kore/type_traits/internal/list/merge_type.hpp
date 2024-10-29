@@ -8,7 +8,7 @@
 #include <kore/type_traits/list.hpp>
 // ------------------------------------------------------------------------------------------------
 
-namespace platform::internal {
+namespace kore::type_taits {
 
 //-------------------------------------------------------------------------------------------------
 // struct merge_type
@@ -28,4 +28,4 @@ struct merge_type<list_type<TArgsFirst...>> {
   }; // t_with
 };   // merge_type
 
-} // namespace platform::internal
+} // namespace kore::type_taits

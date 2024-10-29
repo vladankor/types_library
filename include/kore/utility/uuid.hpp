@@ -9,11 +9,11 @@
 #include <boost/uuid/uuid.hpp>
 // ------------------------------------------------------------------------------------------------
 
-namespace kore {
+namespace kore::utility {
 
 boost::uuids::uuid generate_uuid() noexcept;
 
-} // namespace kore
+} // namespace kore::utility
 
 namespace std {
 

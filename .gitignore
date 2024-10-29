@@ -10,3 +10,5 @@ _deps
 .cache
 bin
 lib
+.a
+Testing

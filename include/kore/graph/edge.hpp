@@ -15,14 +15,14 @@
 
 namespace kore::graph {
 
-template<class VertexDataType, class EdgeDataType>
+template<class TVertexData, class TEdgeData>
 class k_edge {
  public:
-  using tt = graph_tt<VertexDataType, EdgeDataType>;
+  using tt = graph_tt<TVertexData, TEdgeData>;
 
  public:
-  k_edge(tt::id_tt::rref id, kore::k_managed_ptr<typename tt::v_tt::type> source,
-         kore::k_managed_ptr<typename tt::v_tt::type> destination, tt::e_tt::rref data) noexcept
+  k_edge(tt::id_tt::type id, kore::k_managed_ptr<typename tt::v_tt::type> source,
+         kore::k_managed_ptr<typename tt::v_tt::type> destination, tt::e_d_tt::rref data) noexcept
       : m_id__{std::move(id)}, m_source__{std::move(source)},
         m_destination__{std::move(destination)}, m_data__{std::move(data)} {}
 
